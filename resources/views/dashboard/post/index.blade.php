@@ -1,10 +1,105 @@
-@extends('dashboard.master')
+<x-app-layout>
+  <x-slot name="header">
+      <h2 class="font-semibold text-xl text-gray-800 leading-tight">
+          {{ __('Posto Publicados') }} 
+          <a class="nav-link" href="http://proy-layer-vue.test/dashboard/post">Posts</a>
+      </h2>
+
+  </x-slot>
+
+
+
+  <div class="py-12">
+      <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
+          <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
+              <div class="p-6 text-gray-900">
+                <main>
+                  <div class="container py-4">
+                      {{-- <h2>Post</h2> --}}
+                      <a href="{{url('dashboard/post/create')}}" class="btn btn-primary btn btn-sm">New Post</a>
+                  </div>
+              </main>
+                <div style="text-align: center">
+                  <table class="table table-striped" style="width: 80%; margin: 0px auto; text-align: center">
+                      <thead>
+                          <tr>
+                              <td>
+                                  <b>Id</b> 
+                              </td><td>
+                                  <b>Categoria</b> 
+                              </td>
+                              <td>
+                                  <b>Nombre</b> 
+                              </td>
+                              <td>
+                                  <b>Descripción</b> 
+                              </td>
+                              <td>
+                                  <b>Estado Publiación</b> 
+                              </td>
+                              <td>
+                                  <b>Creación</b> 
+                              </td>
+                              <td>
+                                  <b>Actualización</b> 
+                              </td>
+                              <td>
+                                  <b>Eliminar</b> 
+                              </td></b> 
+                          </tr>
+                      </thead>
+                  <tbody>
+                      @foreach ($posts as $item)
+                      <tr>
+                          <td>
+                              {{ $item->id }}
+                          </td>
+                          <td>
+                              {{ $item->category->name}}
+                          </td>
+                          <td>
+                              {{ $item->name }}
+                          </td>
+                          <td>
+                              {{ $item->description }}
+                          </td>
+                          <td>
+                          {{ $item->status}}
+                      </td>
+                          <td>
+                              {{ $item->created_at}}
+                          </td>
+                          <td>
+                              {{ $item->update_at}}
+                              <a href="{{url('dashboard/post/'.$item->id.'/edit')}}" class="btn btn-primary"><i class="bi bi-pencil-square"></i></a>
+                            
+                          </td>
+                          <td>
+                              <form action="{{ route("post.destroy",$item->id)}}" method="post">
+                              @method("DELETE")
+                              @csrf
+                              <button class="btn btn-primary" type="submit"><i class="bi bi-file-earmark-x-fill"></i></button>
+                          </form>
+                      </td>
+                      @endforeach
+                      
+              </div>
+
+              
+          </div>
+          
+      </div>
+  </div>
+  
+</x-app-layout>
+
+{{-- @extends('dashboard.master')
 @section('content')
 @section('master')
 @section('titulo','Poster')
-@section('contenido')
+@section('contenido') --}}
 
- <head>
+ {{-- <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Bootstrap demo</title>
@@ -128,145 +223,17 @@
     <!-- Container wrapper -->
   </nav>
   <!-- Navbar -->    
-</head>
+</head> --}}
 
 
 
-
+{{-- 
 <main>
     <div class="container py-4">
         
         <h2>Post Publicados</h2>
         <a href="{{url('dashboard/post/create')}}" class="btn btn-primary btn btn-sm">New Post</a>
     </div>
-</main>
+</main> --}}
 
-<div style="text-align: center">
-<table class="table table-striped" style="width: 80%; margin: 0px auto; text-align: center">
-    <thead>
-        <tr>
-            <td>
-                <b>Id</b> 
-            </td><td>
-                <b>Categoria</b> 
-            </td>
-            <td>
-                <b>Nombre</b> 
-            </td>
-            <td>
-                <b>Descripción</b> 
-            </td>
-            <td>
-                <b>Estado Publiación</b> 
-            </td>
-            <td>
-                <b>Creación</b> 
-            </td>
-            <td>
-                <b>Actualización</b> 
-            </td>
-            <td>
-                <b>Eliminar</b> 
-            </td></b> 
-        </tr>
-    </thead>
-<tbody>
-    @foreach ($posts as $item)
-    <tr>
-        <td>
-            {{ $item->id }}
-        </td>
-        <td>
-            {{ $item->category->name}}
-        </td>
-        <td>
-            {{ $item->name }}
-        </td>
-        <td>
-            {{ $item->description }}
-        </td>
-        <td>
-        {{ $item->status}}
-    </td>
-        <td>
-            {{ $item->created_at}}
-        </td>
-        <td>
-            {{ $item->update_at}}
-            <a href="{{url('dashboard/post/'.$item->id.'/edit')}}" class="btn btn-primary"><i class="bi bi-pencil-square"></i></a>
-          
-        </td>
-        <td>
-            <form action="{{ route("post.destroy",$item->id)}}" method="post">
-            @method("DELETE")
-            @csrf
-            <button class="btn btn-primary" type="submit"><i class="bi bi-file-earmark-x-fill"></i></button>
-        </form>
-    </td>
-    @endforeach
 
-</tbody>
-</table>
-</div>
-</tr>
-
-<br>
-<br>
-<br>
-<br>
-
-<footer class="bg-light text-center text-white">
-    <!-- Grid container -->
-    <div style="">
-    <div class="container p-4 pb-0" >
-      <!-- Section: Social media -->
-      <section class="mb-4">
-        <!-- Facebook -->
-        <a
-          class="btn text-white btn-floating m-1"
-          style="background-color: #3b5998;"
-          href="https://www.facebook.com/soyiudigital"
-          role="button"
-          ><i class="fab fa-facebook-f"></i
-        ></a>
-  
-        <!-- Twitter -->
-        <a
-          class="btn text-white btn-floating m-1"
-          style="background-color: #55acee;"
-          href="https://twitter.com/IUDIGITAL"
-          role="button"
-          ><i class="fab fa-twitter"></i
-        ></a>
-  
-        <!-- Google -->
-        <a
-          class="btn text-white btn-floating m-1"
-          style="background-color: #dd4b39;"
-          href="https://www.linkedin.com/company/unavailable/"
-          role="button"
-          ><i class="fab fa-google"></i
-        ></a>
-  
-        <!-- Instagram -->
-        <a
-          class="btn text-white btn-floating m-1"
-          style="background-color: #ac2bac;"
-          href="https://www.instagram.com/iudigital/"
-          role="button"
-          ><i class="fab fa-instagram"></i
-        ></a>
-  
-        <!-- Linkedin -->
-      </section>
-      <!-- Section: Social media -->
-    </div>
-    <!-- Grid container -->
-  
-    <!-- Copyright -->
-    <div class="text-center p-3" style="background-color: rgba(0, 0, 0, 0.2);">
-      © 2020 Copyright:
-      <a class="text-white" href="https://www.iudigital.edu.co/Paginas/default.aspx">IUDigital de Antioquia</a>
-    </div>
-    <!-- Copyright -->
-  </footer>

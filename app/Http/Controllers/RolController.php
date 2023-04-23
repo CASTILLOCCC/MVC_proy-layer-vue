@@ -4,18 +4,18 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Spatie\Permission\Models\Role;
-use Spatie\Permission\Models\Permissioin;
-use Illuminate\Support\Facades\BD;
+use Spatie\Permission\Models\Permission;
+use Illuminate\Support\Facades\DB;
 
 
 class RolController extends Controller
 {
     function __construct()
     {
-        $this->middleware('Permisson:ver-rol | crear-rol | editar-rol | borrar-rol',['only'=>['index']]);
-        $this->middleware('Permission:crear-rol' ,['only' => ['create','store']]);   
-        $this->middleware('Permission:editar-rol' ,['only' => ['edit','update']]);   
-        $this->middleware('Permission:borrar-rol' ,['only' => ['destroy']]);  
+        $this->middleware('permission:ver-rol | crear-rol | editar-rol | borrar-rol',['only'=>['index']]);
+        $this->middleware('permission:crear-rol' ,['only' => ['create','store']]);   
+        $this->middleware('permission:editar-rol' ,['only' => ['edit','update']]);   
+        $this->middleware('permission:borrar-rol' ,['only' => ['destroy']]);  
     }
     /**
      * Display a listing of the resource.
@@ -31,8 +31,8 @@ class RolController extends Controller
      */
     public function create()
     {
-        $permission = Permission::get();
-        return view ('roles.create');
+        $permission = Permission::all()->pluck(value:'name',key:('id'));
+        return view ('roles.create', compact('permission'));
     }
 
     /**
@@ -41,8 +41,9 @@ class RolController extends Controller
     public function store(Request $request)
     {
         $this->validate($request,['name'=>'required','permission' =>'required']);
-        $role = Role::create(['name'=>$request->input('permission')]);
-        $role->sycPermissions($request->input('permission'));
+        
+        $role = Role::create($request->only('name'));
+        $role->syncPermissions($request->input('permission',[]));
         return redirect ()-> route('roles.index');
     }
 
@@ -57,28 +58,22 @@ class RolController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit($id)
+    public function edit(Role $role)
     {
-        $role = Role::find($id);
-        $permission=Permission::get();
-        $rolePermission=DB::table('role_has_permissions')->where('role_has_permissions.role_id', $id)
-        //metodo pluck, recupera todos los valores de clave determinada Id
-            ->pluck('role_has_permissions.permission_id','role_has_permissions.permissions_id')
-            ->all();    
-        return view('roles.editar', compact('role','permission','rolePermissions'));
+        $role ->load('permissions');
+        $permission=Permission::all()->pluck(value:'name', key:'id');   
+        return view('roles.edit', compact('role','permission'));
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, string $id)
+    public function update(Request $request, Role $role)
     {
         $this->validate($request,['name'=>'required','permission' =>'required']);
-        $role= Role::find($id);
-        $role->name = $request->input('name');
-        $role->save();
-        $role->synPermissions($request->input('permission'));
-        return redirect()->ruote('roles.index');
+        $role->update($request->only('name'));
+        $role->permissions()->sync($request->input('permission',[]));
+        return redirect ()-> route('roles.index');
     }
 
     /**
@@ -86,6 +81,8 @@ class RolController extends Controller
      */
     public function destroy(string $id)
     {
-        //
+        $rol=Role::find($id);
+        DB::table('roles')->where('id',$id)->delete();
+        return redirect()->route('roles.index');
     }
 }

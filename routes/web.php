@@ -1,9 +1,12 @@
 <?php
 
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\RolController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\PostController;
+use App\Http\Controllers\RollController;
+use App\Http\Controllers\UsuarioController;
 
 /*
 |--------------------------------------------------------------------------
@@ -33,3 +36,5 @@ Route::middleware('auth')->group(function () {
 require __DIR__.'/auth.php';
 Route::resource('dashboard/post', App\http\Controllers\PostController::class);
 Route::resource('dashboard/categories', App\http\Controllers\CategoryController::class);    
+Route::resource('roles', RolController::class);
+Route::resource('usuarios', UsuarioController::class);  
