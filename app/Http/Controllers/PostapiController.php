@@ -1,0 +1,71 @@
+<?php
+
+namespace App\Http\Controllers;
+
+use App\Models\Post;
+use Illuminate\Http\Request;
+// use App\Models\Post;
+
+class PostapiController extends Controller
+{
+    /**
+     * Display a listing of the resource.
+     */
+    public function index()
+    {
+        $post=Post::all();
+        return $post;
+    }
+
+    /**
+     * Store a newly created resource in storage.
+     */
+    public function store(Request $request)
+    {
+        $request->validate([
+            'name'=>'required|min:3|max:15',
+            'description'=>'required|min:2',
+        ]);
+        $post = new Post();
+        $post->name=$request->input('name');
+        $post->description=$request->input('description');
+        $post->category_id=$request->input('category');
+        $post->save();
+        return $post; 
+    }
+
+    /**
+     * Display the specified resource.
+     */
+    public function show(string $id)
+    {
+        $post=Post::find($id);
+        return $post; 
+    }
+
+    /**
+     * Update the specified resource in storage.
+     */
+    public function update(Request $request, string $id)
+    {
+        $request->validate([
+            'name'=>'required|min:3|max:15',
+            'description'=>'required|min:2',
+        ]);
+        $post = Post::find($id);
+        $post->name=$request->input('name');
+        $post->description=$request->input('description');
+        $post->save();
+        return $post;
+    }
+
+    /**
+     * Remove the specified resource from storage.
+     */
+    public function destroy(string $id)
+    {
+        $post = Post::find($id);
+        $post->delete();
+        return['Eliminado'];
+    }
+}

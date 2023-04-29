@@ -13,7 +13,7 @@
                 <div class="p-6 text-gray-900">
                     @include('dashboard.partials.validation-error')
                     <form action="{{ route('roles.store')}}" method="post">
-                        @csrf
+                        @csrf   
                 </div>
 
                 <div class="mb-3 row">
